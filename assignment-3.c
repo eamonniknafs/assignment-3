@@ -29,7 +29,7 @@ typedef char city_t[MAX_CITY_NAME_LEN+1];; // null terminate fixed length city
 // Structure to hold all the information for a single flight
 //   A city's schedule has an array of these
 struct flight {
-  int time;       // departure time of the flight
+  time_t time;       // departure time of the flight
   int available;  // number of seats currently available on the flight
   int capacity;   // maximum seat capacity of the flight
 };
@@ -318,9 +318,9 @@ void flight_schedule_initialize(struct flight_schedule array[], int n)
     array[i+1].prev = &array[i];
   }
   // Takes care of last node.  
-  // Its prev pointer will be set in the loop,
-  // we just have to set its next to NULL.
+  flight_schedule_reset(&array[n-1]); // reset clears all fields
   array[n-1].next = NULL;
+  array[n-1].prev = &array[n-2];
   flight_schedules_free = &array[0];
 }
 
