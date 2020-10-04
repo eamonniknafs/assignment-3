@@ -372,7 +372,6 @@ int flight_compare_time(const void *a, const void *b)
   return (af->time - bf->time);
 }
 
-//TODO: flight_schedule_allocate
 /***********************************************************
  * flight_schedule_allocate:
    – Takes a schedule off the free list and places it on the active list
@@ -386,7 +385,6 @@ struct flight_schedule * flight_schedule_allocate(){
   return flight_schedules_active;
 }
 
-//TODO: flight_schedule_free
 /***********************************************************
  * flight_schedule_free:
    – Takes as input a flight_schedule struct.
