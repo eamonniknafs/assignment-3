@@ -379,9 +379,11 @@ int flight_compare_time(const void *a, const void *b)
    – This should be used as a helper function for flight_schedule_add
  ***********************************************************/
 struct flight_schedule * flight_schedule_allocate(){
+  struct flight_schedule *fsa_next = flight_schedules_active;
   flight_schedules_active = flight_schedules_free;
   flight_schedules_free = flight_schedules_free->next;
-  flight_schedules_active->next = 0;
+  flight_schedules_active->next = fsa_next;
+  flight_schedules_free->prev = NULL;
   return flight_schedules_active;
 }
 
@@ -407,7 +409,7 @@ void flight_schedule_free(struct flight_schedule *fs){
  ***********************************************************/
 void flight_schedule_add(city_t city){
   struct flight_schedule *fs = flight_schedule_allocate();
-  *fs->destination = city;
+  *fs->destination = *city;
 }
 
 /***********************************************************
@@ -426,16 +428,15 @@ void flight_schedule_remove(city_t city){
   }
 }
 
- //TODO: flight_schedule_listAll
+//TODO: flight_schedule_listAll
 /***********************************************************
  * flight_schedule_listAll:
    – Lists all of the existing flight schedules.
    – Command line syntax: ”L\n”
  ***********************************************************/
 void flight_schedule_listAll(){}
-
  
-  //TODO: flight_schedule_list
+//TODO: flight_schedule_list
 /***********************************************************
  * flight_schedule_list:
    – Lists all of the flights of a given city
@@ -443,8 +444,7 @@ void flight_schedule_listAll(){}
  ***********************************************************/
 void flight_schedule_list(city_t city){}
 
-
- //TODO: flight_schedule_add_flight
+//TODO: flight_schedule_add_flight
 /***********************************************************
  * flight_schedule_add_flight:
    – Takes as input a city and adds a given flight for this city.
@@ -454,8 +454,7 @@ void flight_schedule_list(city_t city){}
  ***********************************************************/
 void flight_schedule_add_flight(city_t city){}
 
-
- //TODO: flight_schedule_remove_flight
+//TODO: flight_schedule_remove_flight
 /***********************************************************
  * flight_schedule_remove_flight:
    – Takes as input a city and removes the given flight for this city.
@@ -465,7 +464,7 @@ void flight_schedule_add_flight(city_t city){}
  ***********************************************************/
 void flight_schedule_remove_flight(city_t city){}
 
- //TODO: flight_schedule_schedule_seat
+//TODO: flight_schedule_schedule_seat
 /***********************************************************
  * flight_schedule_schedule_seat:
    – Takes as input a city and schedules a seat on a flight for this city.
@@ -476,8 +475,7 @@ void flight_schedule_remove_flight(city_t city){}
  ***********************************************************/
 void flight_schedule_schedule_seat(city_t city){}
 
-
- //TODO: flight_schedule_unschedule_seat
+//TODO: flight_schedule_unschedule_seat
 /***********************************************************
  * flight_schedule_unschedule_seat:
    – Takes as input a city and unschedules a seat on a given flight for this city.
@@ -488,7 +486,7 @@ void flight_schedule_schedule_seat(city_t city){}
  ***********************************************************/
 void flight_schedule_unschedule_seat(city_t city){}
 
- //TODO: flight_schedule_find
+//TODO: flight_schedule_find
 /***********************************************************
  * flight_schedule_find:
    – Takes as input a city and traverses the active flight list until it finds the flight schedule for this city, if it exists
