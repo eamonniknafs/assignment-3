@@ -379,8 +379,8 @@ int flight_compare_time(const void *a, const void *b)
    – This should be used as a helper function for flight_schedule_add
  ***********************************************************/
 struct flight_schedule * flight_schedule_allocate(){
-  flight_schedules_active = &flight_schedules_free;
-  flight_schedules_active = &flight_schedules_active->next;
+  flight_schedules_active = flight_schedules_free;
+  flight_schedules_free = flight_schedules_free->next;
   flight_schedules_active->next = 0;
   return flight_schedules_active;
 }
@@ -394,12 +394,11 @@ struct flight_schedule * flight_schedule_allocate(){
  ***********************************************************/
 void flight_schedule_free(struct flight_schedule *fs){
   flight_schedule_reset(fs);
-  flight_schedules_free->prev = &fs;
-  fs->next = &flight_schedules_free;
-  flight_schedules_free = &fs;
+  flight_schedules_free->prev = fs;
+  fs->next = flight_schedules_free;
+  flight_schedules_free = fs;
 }
 
- //TODO: flight_schedule_add
 /***********************************************************
  * flight_schedule_add:
    – Takes as input a city and adds a flight schedule for this given city.
@@ -407,7 +406,8 @@ void flight_schedule_free(struct flight_schedule *fs){
    – Command line syntax: ”A Toronto\n”
  ***********************************************************/
 void flight_schedule_add(city_t city){
-  
+  struct flight_schedule *fs = flight_schedule_allocate();
+  *fs->destination = city;
 }
 
  //TODO: flight_schedule_remove
