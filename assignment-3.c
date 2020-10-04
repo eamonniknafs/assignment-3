@@ -394,7 +394,7 @@ struct flight_schedule * flight_schedule_allocate(){
    – Does not return anything.
    – This should be used as a helper function for flight_schedule_remove
  ***********************************************************/
-
+void flight_schedule_free(struct flight_schedule *fs){}
 
  //TODO: flight_schedule_add
 /***********************************************************
@@ -403,6 +403,7 @@ struct flight_schedule * flight_schedule_allocate(){
    – Does not return anything.
    – Command line syntax: ”A Toronto\n”
  ***********************************************************/
+void flight_schedule_add(city_t city){}
 
  //TODO: flight_schedule_remove
 /***********************************************************
@@ -411,6 +412,7 @@ struct flight_schedule * flight_schedule_allocate(){
    – Does not return anything.
    – Command line syntax: ”R Toronto\n”
  ***********************************************************/
+void flight_schedule_remove(city_t city){}
 
  //TODO: flight_schedule_listAll
 /***********************************************************
@@ -418,6 +420,8 @@ struct flight_schedule * flight_schedule_allocate(){
    – Lists all of the existing flight schedules.
    – Command line syntax: ”L\n”
  ***********************************************************/
+void flight_schedule_listAll(){}
+
  
   //TODO: flight_schedule_list
 /***********************************************************
@@ -425,6 +429,8 @@ struct flight_schedule * flight_schedule_allocate(){
    – Lists all of the flights of a given city
    – Command line syntax: ”l Toronto\n”
  ***********************************************************/
+void flight_schedule_list(city_t city){}
+
 
  //TODO: flight_schedule_add_flight
 /***********************************************************
@@ -434,6 +440,8 @@ struct flight_schedule * flight_schedule_allocate(){
    – Does not return anything.
    – Command line syntax: ”a Toronto\n 360 100\n”
  ***********************************************************/
+void flight_schedule_add_flight(city_t city){}
+
 
  //TODO: flight_schedule_remove_flight
 /***********************************************************
@@ -443,6 +451,7 @@ struct flight_schedule * flight_schedule_allocate(){
    – Does not return anything.
    – Command line syntax: ”r Toronto\n 360 '\n'”
  ***********************************************************/
+void flight_schedule_remove_flight(city_t city){}
 
  //TODO: flight_schedule_schedule_seat
 /***********************************************************
@@ -453,6 +462,8 @@ struct flight_schedule * flight_schedule_allocate(){
    – Does not return anything.
    – Command line syntax: ”s Toronto\n 340 '\n'”
  ***********************************************************/
+void flight_schedule_schedule_seat(city_t city){}
+
 
  //TODO: flight_schedule_unschedule_seat
 /***********************************************************
@@ -463,6 +474,7 @@ struct flight_schedule * flight_schedule_allocate(){
    – Does not return anything.
    – Command line syntax: ”u Toronto\n 360 '\n'”
  ***********************************************************/
+void flight_schedule_unschedule_seat(city_t city){}
 
  //TODO: flight_schedule_find
 /***********************************************************
@@ -471,3 +483,6 @@ struct flight_schedule * flight_schedule_allocate(){
    – Returns the flight schedule of said city.
    – While not necessary, this function will prove very useful in implementing the other functions.
  ***********************************************************/
+ struct flight_schedule * flight_schedule_find(city_t city){
+   return 0;
+ }
