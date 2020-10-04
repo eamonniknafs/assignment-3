@@ -394,7 +394,12 @@ struct flight_schedule * flight_schedule_allocate(){
    – Does not return anything.
    – This should be used as a helper function for flight_schedule_remove
  ***********************************************************/
-void flight_schedule_free(struct flight_schedule *fs){}
+void flight_schedule_free(struct flight_schedule *fs){
+  flight_schedule_reset(fs);
+  flight_schedules_free->prev = &fs;
+  fs->next = &flight_schedules_free;
+  flight_schedules_free = &fs;
+}
 
  //TODO: flight_schedule_add
 /***********************************************************
@@ -403,7 +408,9 @@ void flight_schedule_free(struct flight_schedule *fs){}
    – Does not return anything.
    – Command line syntax: ”A Toronto\n”
  ***********************************************************/
-void flight_schedule_add(city_t city){}
+void flight_schedule_add(city_t city){
+  
+}
 
  //TODO: flight_schedule_remove
 /***********************************************************
