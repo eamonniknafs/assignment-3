@@ -372,4 +372,102 @@ int flight_compare_time(const void *a, const void *b)
   return (af->time - bf->time);
 }
 
-WRITE SOME CODE!
+//TODO: flight_schedule_allocate
+/***********************************************************
+ * flight_schedule_allocate:
+   – Takes a schedule off the free list and places it on the active list
+   – Returns the updated flight_schedule.
+   – This should be used as a helper function for flight_schedule_add
+ ***********************************************************/
+struct flight_schedule * flight_schedule_allocate(){
+  flight_schedules_active = &flight_schedules_free;
+  flight_schedules_active = &flight_schedules_active->next;
+  flight_schedules_active->next = 0;
+  return flight_schedules_active;
+}
+
+//TODO: flight_schedule_free
+/***********************************************************
+ * flight_schedule_free:
+   – Takes as input a flight_schedule struct.
+   – Takes a schedule off the active list, resets it, and places the node back on the free list.
+   – Does not return anything.
+   – This should be used as a helper function for flight_schedule_remove
+ ***********************************************************/
+
+
+ //TODO: flight_schedule_add
+/***********************************************************
+ * flight_schedule_add:
+   – Takes as input a city and adds a flight schedule for this given city.
+   – Does not return anything.
+   – Command line syntax: ”A Toronto\n”
+ ***********************************************************/
+
+ //TODO: flight_schedule_remove
+/***********************************************************
+ * flight_schedule_remove:
+   – Takes as input a city and removes the flight schedule for this city, if it exists.
+   – Does not return anything.
+   – Command line syntax: ”R Toronto\n”
+ ***********************************************************/
+
+ //TODO: flight_schedule_listAll
+/***********************************************************
+ * flight_schedule_listAll:
+   – Lists all of the existing flight schedules.
+   – Command line syntax: ”L\n”
+ ***********************************************************/
+ 
+  //TODO: flight_schedule_list
+/***********************************************************
+ * flight_schedule_list:
+   – Lists all of the flights of a given city
+   – Command line syntax: ”l Toronto\n”
+ ***********************************************************/
+
+ //TODO: flight_schedule_add_flight
+/***********************************************************
+ * flight_schedule_add_flight:
+   – Takes as input a city and adds a given flight for this city.
+   – This function should call time get and flight capacity get to take in the time and capacity for the newly added flight.
+   – Does not return anything.
+   – Command line syntax: ”a Toronto\n 360 100\n”
+ ***********************************************************/
+
+ //TODO: flight_schedule_remove_flight
+/***********************************************************
+ * flight_schedule_remove_flight:
+   – Takes as input a city and removes the given flight for this city.
+   – This function should call time get to determine which flight should be removed.
+   – Does not return anything.
+   – Command line syntax: ”r Toronto\n 360 '\n'”
+ ***********************************************************/
+
+ //TODO: flight_schedule_schedule_seat
+/***********************************************************
+ * flight_schedule_schedule_seat:
+   – Takes as input a city and schedules a seat on a flight for this city.
+   – The user can specify any time and your program should schedule the next available flight from the given time.
+   – Be sure to adjust the available seats accordingly.
+   – Does not return anything.
+   – Command line syntax: ”s Toronto\n 340 '\n'”
+ ***********************************************************/
+
+ //TODO: flight_schedule_unschedule_seat
+/***********************************************************
+ * flight_schedule_unschedule_seat:
+   – Takes as input a city and unschedules a seat on a given flight for this city.
+   – The user must specify the exact time for the flight that they are unscheduling. 
+   – Be sure to adjust the available seats accordingly.
+   – Does not return anything.
+   – Command line syntax: ”u Toronto\n 360 '\n'”
+ ***********************************************************/
+
+ //TODO: flight_schedule_find
+/***********************************************************
+ * flight_schedule_find:
+   – Takes as input a city and traverses the active flight list until it finds the flight schedule for this city, if it exists
+   – Returns the flight schedule of said city.
+   – While not necessary, this function will prove very useful in implementing the other functions.
+ ***********************************************************/
