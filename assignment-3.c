@@ -16,7 +16,7 @@
 
 // Time definitions
 #define TIME_MIN 0
-#define TIME_MAX ((60 * 24)-1)
+#define TIME_MAX ((60 * 24)-1)   
 #define TIME_NULL -1
 
 
@@ -410,14 +410,21 @@ void flight_schedule_add(city_t city){
   *fs->destination = city;
 }
 
- //TODO: flight_schedule_remove
 /***********************************************************
  * flight_schedule_remove:
    – Takes as input a city and removes the flight schedule for this city, if it exists.
    – Does not return anything.
    – Command line syntax: ”R Toronto\n”
  ***********************************************************/
-void flight_schedule_remove(city_t city){}
+void flight_schedule_remove(city_t city){
+  struct flight_schedule *iter = flight_schedules_active;
+  while (&iter != 0){
+    if (iter->destination == city){
+      flight_schedule_free(iter);
+    }
+    iter=iter->next;
+  }
+}
 
  //TODO: flight_schedule_listAll
 /***********************************************************
