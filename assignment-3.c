@@ -383,7 +383,7 @@ struct flight_schedule * flight_schedule_allocate(){
   flight_schedules_active = flight_schedules_free;
   flight_schedules_free = flight_schedules_free->next;
   flight_schedules_active->next = fsa_next;
-  flight_schedules_active->next->prev = flight_schedules_active;
+  // flight_schedules_active->next->prev = flight_schedules_active;
   flight_schedules_free->prev = NULL;
   return flight_schedules_active;
 }
@@ -410,7 +410,7 @@ void flight_schedule_free(struct flight_schedule *fs){
  ***********************************************************/
 void flight_schedule_add(city_t city){
   struct flight_schedule *fs = flight_schedule_allocate();
-  for (int i = 0; i<MAX_CITY_NAME_LEN+1; i++){
+  for (int i = 0; city[i] != '\0'; i++){
     fs->destination[i] = city[i];
   }
 }
