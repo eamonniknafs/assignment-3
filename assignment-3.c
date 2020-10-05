@@ -410,7 +410,9 @@ void flight_schedule_free(struct flight_schedule *fs){
  ***********************************************************/
 void flight_schedule_add(city_t city){
   struct flight_schedule *fs = flight_schedule_allocate();
-  *fs->destination = *city;
+  for (int i = 0; i<MAX_CITY_NAME_LEN+1; i++){
+    fs->destination[i] = city[i];
+  }
 }
 
 /***********************************************************
@@ -429,7 +431,6 @@ void flight_schedule_remove(city_t city){
   }
 }
 
-//TODO: fix flight_schedule_listAll()
 /***********************************************************
  * flight_schedule_listAll:
    – Lists all of the existing flight schedules.
