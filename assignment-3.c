@@ -383,6 +383,7 @@ struct flight_schedule * flight_schedule_allocate(){
   flight_schedules_active = flight_schedules_free;
   flight_schedules_free = flight_schedules_free->next;
   flight_schedules_active->next = fsa_next;
+  // flight_schedules_active->next->prev = flight_schedules_active;
   flight_schedules_free->prev = NULL;
   return flight_schedules_active;
 }
@@ -428,13 +429,19 @@ void flight_schedule_remove(city_t city){
   }
 }
 
-//TODO: flight_schedule_listAll
+//TODO: fix flight_schedule_listAll()
 /***********************************************************
  * flight_schedule_listAll:
    – Lists all of the existing flight schedules.
    – Command line syntax: ”L\n”
  ***********************************************************/
-void flight_schedule_listAll(){}
+void flight_schedule_listAll(){
+  struct flight_schedule *trav = flight_schedules_active;
+  while (trav != NULL){
+    printf("%s\n", trav->destination);
+    trav = trav->next;
+  }
+}
  
 //TODO: flight_schedule_list
 /***********************************************************
