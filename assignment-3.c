@@ -383,7 +383,7 @@ struct flight_schedule * flight_schedule_allocate(){
   flight_schedules_active = flight_schedules_free;
   flight_schedules_free = flight_schedules_free->next;
   flight_schedules_active->next = fsa_next;
-  // flight_schedules_active->next->prev = flight_schedules_active;
+  flight_schedules_active->next->prev = flight_schedules_active;
   flight_schedules_free->prev = NULL;
   return flight_schedules_active;
 }
@@ -444,13 +444,18 @@ void flight_schedule_listAll(){
   }
 }
  
-//TODO: flight_schedule_list
 /***********************************************************
  * flight_schedule_list:
    – Lists all of the flights of a given city
    – Command line syntax: ”l Toronto\n”
  ***********************************************************/
-void flight_schedule_list(city_t city){}
+void flight_schedule_list(city_t city){
+  struct flight_schedule *trav = flight_schedules_active;
+  while (trav != NULL){
+    if (trav->destination == city) printf("%s\n", trav->destination);
+    trav = trav->next;
+  }
+}
 
 //TODO: flight_schedule_add_flight
 /***********************************************************
