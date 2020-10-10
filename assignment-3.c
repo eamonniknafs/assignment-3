@@ -383,13 +383,14 @@ struct flight_schedule * flight_schedule_allocate(){
   flight_schedules_active = flight_schedules_free;
   flight_schedules_free = flight_schedules_free->next;
   flight_schedules_active->next = fsa_next;
-  // flight_schedules_active->next->prev = flight_schedules_active;
+  flight_schedules_active->prev = NULL;
+  if (fsa_next != 0) fsa_next->prev = flight_schedules_active;
   flight_schedules_free->prev = NULL;
   return flight_schedules_active;
 }
 
 /***********************************************************
- * flight_schedule_free:
+ * flight_schedule_free():
    – Takes as input a flight_schedule struct.
    – Takes a schedule off the active list, resets it, and places the node back on the free list.
    – Does not return anything.
@@ -403,7 +404,7 @@ void flight_schedule_free(struct flight_schedule *fs){
 }
 
 /***********************************************************
- * flight_schedule_add:
+ * flight_schedule_add():
    – Takes as input a city and adds a flight schedule for this given city.
    – Does not return anything.
    – Command line syntax: ”A Toronto\n”
@@ -416,7 +417,7 @@ void flight_schedule_add(city_t city){
 }
 
 /***********************************************************
- * flight_schedule_remove:
+ * flight_schedule_remove():
    – Takes as input a city and removes the flight schedule for this city, if it exists.
    – Does not return anything.
    – Command line syntax: ”R Toronto\n”
@@ -432,7 +433,7 @@ void flight_schedule_remove(city_t city){
 }
 
 /***********************************************************
- * flight_schedule_listAll:
+ * flight_schedule_listAll():
    – Lists all of the existing flight schedules.
    – Command line syntax: ”L\n”
  ***********************************************************/
@@ -445,31 +446,59 @@ void flight_schedule_listAll(){
 }
  
 /***********************************************************
- * flight_schedule_list:
+ * flight_schedule_list():
    – Lists all of the flights of a given city
    – Command line syntax: ”l Toronto\n”
  ***********************************************************/
 void flight_schedule_list(city_t city){
   struct flight_schedule *trav = flight_schedules_active;
   while (trav != NULL){
-    if (trav->destination == city) printf("%s\n", trav->destination);
+    if (*trav->destination == *city){
+      printf("%s", "The flights for ");
+      printf("%s", trav->destination);
+      printf("%s", " are: ");
+      for (int i = 0; trav->flights[i].time != TIME_NULL; i++){
+        printf("%s", "(");
+        printf("%i", trav->flights[i].time);
+        printf("%s", ", ");
+        printf("%i", trav->flights[i].available);
+        printf("%s", ", ");
+        printf("%i", trav->flights[i].capacity);
+        printf("%s\n", ")");
+      }
+    }
     trav = trav->next;
   }
 }
 
 //TODO: flight_schedule_add_flight
 /***********************************************************
- * flight_schedule_add_flight:
+ * flight_schedule_add_flight():
    – Takes as input a city and adds a given flight for this city.
-   – This function should call time get and flight capacity get to take in the time and capacity for the newly added flight.
+   – This function should call time_get and flight_capacity_get to take in the time and capacity for the newly added flight.
    – Does not return anything.
    – Command line syntax: ”a Toronto\n 360 100\n”
  ***********************************************************/
-void flight_schedule_add_flight(city_t city){}
+void flight_schedule_add_flight(city_t city){
+  struct flight_schedule *trav = flight_schedules_active;
+  struct flight new;
+  flight_capacity_get(new.capacity);
+  time_get(&new.time);
+  while (trav != NULL){
+    int idx = 0;
+    if (trav->destination == city) {
+      while (trav->flights[idx].time != TIME_NULL){
+        idx++;
+      }
+      trav->flights[idx] = new;
+    }
+    trav = trav->next;
+  }
+}
 
 //TODO: flight_schedule_remove_flight
 /***********************************************************
- * flight_schedule_remove_flight:
+ * flight_schedule_remove_flight():
    – Takes as input a city and removes the given flight for this city.
    – This function should call time get to determine which flight should be removed.
    – Does not return anything.
@@ -479,7 +508,7 @@ void flight_schedule_remove_flight(city_t city){}
 
 //TODO: flight_schedule_schedule_seat
 /***********************************************************
- * flight_schedule_schedule_seat:
+ * flight_schedule_schedule_seat():
    – Takes as input a city and schedules a seat on a flight for this city.
    – The user can specify any time and your program should schedule the next available flight from the given time.
    – Be sure to adjust the available seats accordingly.
@@ -490,7 +519,7 @@ void flight_schedule_schedule_seat(city_t city){}
 
 //TODO: flight_schedule_unschedule_seat
 /***********************************************************
- * flight_schedule_unschedule_seat:
+ * flight_schedule_unschedule_seat():
    – Takes as input a city and unschedules a seat on a given flight for this city.
    – The user must specify the exact time for the flight that they are unscheduling. 
    – Be sure to adjust the available seats accordingly.
@@ -501,7 +530,7 @@ void flight_schedule_unschedule_seat(city_t city){}
 
 //TODO: flight_schedule_find
 /***********************************************************
- * flight_schedule_find:
+ * flight_schedule_find():
    – Takes as input a city and traverses the active flight list until it finds the flight schedule for this city, if it exists
    – Returns the flight schedule of said city.
    – While not necessary, this function will prove very useful in implementing the other functions.
