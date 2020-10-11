@@ -379,8 +379,8 @@ int flight_compare_time(const void *a, const void *b)
    – This should be used as a helper function for flight_schedule_add
  ***********************************************************/
 struct flight_schedule * flight_schedule_allocate(){
-  struct flight_schedule *fsa_next = flight_schedules_active;
-  flight_schedules_active = flight_schedules_free;
+  struct flight_schedule *fsa_next = flight_schedules_active; //Keeps pointer for next node (in active list)
+  flight_schedules_active = flight_schedules_free; 
   flight_schedules_free = flight_schedules_free->next;
   flight_schedules_active->next = fsa_next;
   flight_schedules_active->prev = NULL;
@@ -411,9 +411,10 @@ void flight_schedule_free(struct flight_schedule *fs){
  ***********************************************************/
 void flight_schedule_add(city_t city){
   struct flight_schedule *fs = flight_schedule_allocate();
-  for (int i = 0; city[i] != '\0'; i++){
-    fs->destination[i] = city[i];
-  }
+  strcpy(fs->destination, city);
+  // for (int i = 0; city[i] != '\000'; i++){
+  //   *fs->destination[i] = *city[i];
+  // }
 }
 
 /***********************************************************
@@ -423,12 +424,21 @@ void flight_schedule_add(city_t city){
    – Command line syntax: ”R Toronto\n”
  ***********************************************************/
 void flight_schedule_remove(city_t city){
-  struct flight_schedule *iter = flight_schedules_active;
-  while (&iter != 0){
-    if (iter->destination == city){
-      flight_schedule_free(iter);
+  struct flight_schedule *trav = flight_schedules_active;
+  while (trav != NULL){
+    if (*trav->destination == *city) {
+      if (trav->next != NULL && trav->prev != NULL){ //Accounts for next & prev pointers on node being removed
+        trav->prev->next = trav->next;
+        trav->next->prev = trav->prev;
+      }
+      else if (trav->prev != NULL) trav->prev->next = NULL;
+      else if (trav->next != NULL) flight_schedules_free = trav->next;
+      else flight_schedules_free = NULL;
+      flight_schedule_reset(trav); //Resets node being removed
+      trav->next = flight_schedules_free; //Places node back on free list
+      flight_schedules_free = trav;
     }
-    iter=iter->next;
+    trav = trav->next;
   }
 }
 
