@@ -456,19 +456,20 @@ void flight_schedule_list(city_t city){
     if (*trav->destination == *city){
       printf("%s", "The flights for ");
       printf("%s", trav->destination);
-      printf("%s", " are: ");
+      printf("%s", " are:");
       for (int i = 0; trav->flights[i].time != TIME_NULL; i++){
-        printf("%s", "(");
+        printf("%s", " (");
         printf("%i", trav->flights[i].time);
         printf("%s", ", ");
         printf("%i", trav->flights[i].available);
         printf("%s", ", ");
         printf("%i", trav->flights[i].capacity);
-        printf("%s\n", ")");
+        printf("%s", ")");
       }
     }
     trav = trav->next;
   }
+  printf("\n");
 }
 
 //TODO: flight_schedule_add_flight
@@ -482,13 +483,13 @@ void flight_schedule_list(city_t city){
 void flight_schedule_add_flight(city_t city){
   struct flight_schedule *trav = flight_schedules_active;
   while (trav != NULL){
-    if (trav->destination == city) {
+    if (*trav->destination == *city) {
       int idx = 0;
       while (trav->flights[idx].time != TIME_NULL){
         idx++;
       }
-      flight_capacity_get(&trav->flights[idx].capacity);
       time_get(&trav->flights[idx].time);
+      flight_capacity_get(&trav->flights[idx].capacity);
       trav->flights[idx].available = trav->flights[idx].capacity;
     }
     trav = trav->next;
