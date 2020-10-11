@@ -481,16 +481,15 @@ void flight_schedule_list(city_t city){
  ***********************************************************/
 void flight_schedule_add_flight(city_t city){
   struct flight_schedule *trav = flight_schedules_active;
-  struct flight new;
-  flight_capacity_get(new.capacity);
-  time_get(&new.time);
   while (trav != NULL){
-    int idx = 0;
     if (trav->destination == city) {
+      int idx = 0;
       while (trav->flights[idx].time != TIME_NULL){
         idx++;
       }
-      trav->flights[idx] = new;
+      flight_capacity_get(&trav->flights[idx].capacity);
+      time_get(&trav->flights[idx].time);
+      trav->flights[idx].available = trav->flights[idx].capacity;
     }
     trav = trav->next;
   }
