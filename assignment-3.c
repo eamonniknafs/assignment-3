@@ -412,9 +412,6 @@ void flight_schedule_free(struct flight_schedule *fs){
 void flight_schedule_add(city_t city){
   struct flight_schedule *fs = flight_schedule_allocate();
   strcpy(fs->destination, city);
-  // for (int i = 0; city[i] != '\000'; i++){
-  //   *fs->destination[i] = *city[i];
-  // }
 }
 
 /***********************************************************
@@ -493,12 +490,12 @@ void flight_schedule_list(city_t city){
 void flight_schedule_add_flight(city_t city){
   struct flight_schedule *trav = flight_schedules_active;
   while (trav != NULL){
-    if (*trav->destination == *city) {
+    if (*trav->destination == *city) { //find the right node (destination city)
       int idx = 0;
-      while (trav->flights[idx].time != TIME_NULL){
+      while (trav->flights[idx].time != TIME_NULL){ //find an empty slot in that node's flights[] array
         idx++;
       }
-      time_get(&trav->flights[idx].time);
+      time_get(&trav->flights[idx].time); //assign the values
       flight_capacity_get(&trav->flights[idx].capacity);
       trav->flights[idx].available = trav->flights[idx].capacity;
     }
