@@ -423,8 +423,8 @@ void flight_schedule_add(city_t city){
 void flight_schedule_remove(city_t city){
   struct flight_schedule *trav = flight_schedules_active;
   while (trav != NULL){
-    if (*trav->destination == *city) {
-      if (trav->next != NULL && trav->prev != NULL){ //Accounts for next & prev pointers on node being removed
+    if (*trav->destination == *city) { //find the right node, them removes references
+      if (trav->next != NULL && trav->prev != NULL){ //accounts for next & prev pointers on node being removed
         trav->prev->next = trav->next;
         trav->next->prev = trav->prev;
       }
@@ -446,7 +446,7 @@ void flight_schedule_remove(city_t city){
  ***********************************************************/
 void flight_schedule_listAll(){
   struct flight_schedule *trav = flight_schedules_active;
-  while (trav != NULL){
+  while (trav != NULL){ //finds all non-NULL nodes
     printf("%s\n", trav->destination);
     trav = trav->next;
   }
@@ -460,11 +460,11 @@ void flight_schedule_listAll(){
 void flight_schedule_list(city_t city){
   struct flight_schedule *trav = flight_schedules_active;
   while (trav != NULL){
-    if (*trav->destination == *city){
+    if (*trav->destination == *city){ //find the right node (destination city)
       printf("%s", "The flights for ");
       printf("%s", trav->destination);
       printf("%s", " are:");
-      for (int i = 0; trav->flights[i].time != TIME_NULL; i++){
+      for (int i = 0; trav->flights[i].time != TIME_NULL; i++){ //find the flight(s)
         printf("%s", " (");
         printf("%i", trav->flights[i].time);
         printf("%s", ", ");
@@ -479,7 +479,6 @@ void flight_schedule_list(city_t city){
   printf("\n");
 }
 
-//TODO: flight_schedule_add_flight
 /***********************************************************
  * flight_schedule_add_flight():
    – Takes as input a city and adds a given flight for this city.
@@ -503,7 +502,6 @@ void flight_schedule_add_flight(city_t city){
   }
 }
 
-//TODO: flight_schedule_remove_flight
 /***********************************************************
  * flight_schedule_remove_flight():
    – Takes as input a city and removes the given flight for this city.
@@ -511,7 +509,26 @@ void flight_schedule_add_flight(city_t city){
    – Does not return anything.
    – Command line syntax: ”r Toronto\n 360 '\n'”
  ***********************************************************/
-void flight_schedule_remove_flight(city_t city){}
+void flight_schedule_remove_flight(city_t city){
+  struct flight_schedule *trav = flight_schedules_active;
+  time_t in;
+  while (trav != NULL){
+    if (*trav->destination == *city){ //find the right node (destination city)
+      time_get(&in);
+      int idx = 0;
+      while (trav->flights[idx].time != in){ //find an empty slot in that node's flights[] array
+        idx++;
+        if (idx >= MAX_FLIGHTS_PER_CITY) break;
+      }
+      if (trav->flights[idx].time == in) {
+        trav->flights[idx].available = 0;
+        trav->flights[idx].capacity = 0;
+        trav->flights[idx].time = TIME_NULL;
+      }
+    }
+    trav = trav->next;
+  }
+}
 
 //TODO: flight_schedule_schedule_seat
 /***********************************************************
