@@ -558,7 +558,6 @@ void flight_schedule_schedule_seat(city_t city){
   }
 }
 
-//TODO: flight_schedule_unschedule_seat
 /***********************************************************
  * flight_schedule_unschedule_seat():
    – Takes as input a city and unschedules a seat on a given flight for this city.
@@ -567,7 +566,22 @@ void flight_schedule_schedule_seat(city_t city){
    – Does not return anything.
    – Command line syntax: ”u Toronto\n 360 '\n'”
  ***********************************************************/
-void flight_schedule_unschedule_seat(city_t city){}
+void flight_schedule_unschedule_seat(city_t city){
+  struct flight_schedule *trav = flight_schedules_active;
+  time_t in;
+  while (trav != NULL){
+    if (*trav->destination == *city){ //find the right node (destination city)
+      time_get(&in);
+      int idx = 0;
+      while (trav->flights[idx].time != in){ //find the correct flight in that node's flights[] array
+        idx++;
+        if (idx >= MAX_FLIGHTS_PER_CITY) break;
+      }
+      if (trav->flights[idx].available<trav->flights[idx].capacity) trav->flights[idx].available++; //adds to the number of available seats
+    }
+    trav = trav->next;
+  }
+}
 
 //TODO: flight_schedule_find
 /***********************************************************
