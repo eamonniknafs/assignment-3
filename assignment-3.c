@@ -12,7 +12,7 @@
 // Limit constants
 #define MAX_CITY_NAME_LEN 20
 #define MAX_FLIGHTS_PER_CITY 5
-#define MAX_DEFAULT_SCHEDULES 50
+#define MAX_DEFAULT_SCHEDULES 2
 
 // Time definitions
 #define TIME_MIN 0
@@ -425,14 +425,18 @@ void flight_schedule_add(city_t city){
  ***********************************************************/
 void flight_schedule_remove(city_t city){
   struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
-  if (fs == NULL) return;
+  if (fs == NULL){
+    printf("%s","No schedule for ");
+    printf("%s\n", city);
+    return;
+  }
   if (fs->next != NULL && fs->prev != NULL){ //accounts for next & prev pointers on node being removed
     fs->prev->next = fs->next;
     fs->next->prev = fs->prev;
   }
   else if (fs->prev != NULL) fs->prev->next = NULL; 
-  else if (fs->next != NULL) flight_schedules_free = fs->next;
-  else flight_schedules_free = NULL;
+  else if (fs->next != NULL) flight_schedules_active = fs->next;
+  else flight_schedules_active = NULL;
   flight_schedule_reset(fs); //Resets node being removed
   fs->next = flight_schedules_free; //Places node back on free list
   flight_schedules_free = fs;
