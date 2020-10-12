@@ -466,7 +466,7 @@ void flight_schedule_list(city_t city){
   printf("%s", "The flights for ");
   printf("%s", fs->destination);
   printf("%s", " are:");
-  for (int i = 0; fs->flights[i].time != TIME_NULL; i++){ //find the flight(s)
+  for (int i = 0; fs->flights[i].time != TIME_NULL && i<MAX_FLIGHTS_PER_CITY; i++){ //find the flight(s)
     printf("%s", " (");
     printf("%i", fs->flights[i].time);
     printf("%s", ", ");
@@ -487,18 +487,20 @@ void flight_schedule_list(city_t city){
  ***********************************************************/
 void flight_schedule_add_flight(city_t city){
   struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
+  time_t *time;
+  int *capacity;
+  time_get(&time);
+  flight_capacity_get(&capacity);
   if (fs == NULL) return;
-  int idx = 0;
-  while (fs->flights[idx].time != TIME_NULL){ //find an empty slot in that node's flights[] array
-    idx++;
-    if (idx > MAX_FLIGHTS_PER_CITY){
-      printf("%s\n","Sorry we cannot add more flights on this city.");
+  for (int i = 0; i<MAX_FLIGHTS_PER_CITY; i++){
+    if (fs->flights[i].time == TIME_NULL){
+      fs->flights[i].time = time; //assign the values
+      fs->flights[i].capacity = capacity;
+      fs->flights[i].available = fs->flights[i].capacity;
       return;
-    } 
+    }
   }
-  time_get(&fs->flights[idx].time); //assign the values
-  flight_capacity_get(&fs->flights[idx].capacity);
-  fs->flights[idx].available = fs->flights[idx].capacity;
+  printf("%s\n","Sorry we cannot add more flights on this city.");
 }
 
 /***********************************************************
