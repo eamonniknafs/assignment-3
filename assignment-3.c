@@ -12,7 +12,7 @@
 // Limit constants
 #define MAX_CITY_NAME_LEN 20
 #define MAX_FLIGHTS_PER_CITY 5
-#define MAX_DEFAULT_SCHEDULES 50
+#define MAX_DEFAULT_SCHEDULES 2
 
 // Time definitions
 #define TIME_MIN 0
@@ -492,8 +492,8 @@ void flight_schedule_list(city_t city){
  ***********************************************************/
 void flight_schedule_add_flight(city_t city){
   struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
-  time_t *time;
-  int *capacity;
+  time_t time;
+  int capacity;
   time_get(&time);
   flight_capacity_get(&capacity);
   if (fs == NULL) return;
