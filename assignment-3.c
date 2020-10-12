@@ -411,6 +411,11 @@ void flight_schedule_free(struct flight_schedule *fs){
  ***********************************************************/
 void flight_schedule_add(city_t city){
   if (flight_schedules_free == NULL) printf("%s\n","Sorry no more free schedules.");
+  if (flight_schedule_find(city) != NULL){
+    printf("%s","There is a schedule of ");
+    printf("%s", city);
+    printf("%s\n"," already.");
+  }
   else{
     struct flight_schedule *fs = flight_schedule_allocate();
     strcpy(fs->destination, city);
@@ -512,7 +517,11 @@ void flight_schedule_add_flight(city_t city){
  ***********************************************************/
 void flight_schedule_remove_flight(city_t city){
   struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
-  if (fs == NULL) return;
+  if (fs == NULL){
+    printf("%s","No schedule for ");
+    printf("%s\n", city);
+    return;
+  }
   time_t in;
   time_get(&in);
   int idx = 0;
