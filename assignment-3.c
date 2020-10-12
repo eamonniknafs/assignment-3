@@ -12,7 +12,7 @@
 // Limit constants
 #define MAX_CITY_NAME_LEN 20
 #define MAX_FLIGHTS_PER_CITY 5
-#define MAX_DEFAULT_SCHEDULES 2
+#define MAX_DEFAULT_SCHEDULES 50
 
 // Time definitions
 #define TIME_MIN 0
@@ -491,7 +491,10 @@ void flight_schedule_add_flight(city_t city){
   int idx = 0;
   while (fs->flights[idx].time != TIME_NULL){ //find an empty slot in that node's flights[] array
     idx++;
-    if (idx >= MAX_FLIGHTS_PER_CITY) break;
+    if (idx > MAX_FLIGHTS_PER_CITY){
+      printf("%s\n","Sorry we cannot add more flights on this city.");
+      return;
+    } 
   }
   time_get(&fs->flights[idx].time); //assign the values
   flight_capacity_get(&fs->flights[idx].capacity);
