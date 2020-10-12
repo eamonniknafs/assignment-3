@@ -583,13 +583,19 @@ void flight_schedule_unschedule_seat(city_t city){
   }
 }
 
-//TODO: flight_schedule_find
 /***********************************************************
  * flight_schedule_find():
    – Takes as input a city and traverses the active flight list until it finds the flight schedule for this city, if it exists
    – Returns the flight schedule of said city.
    – While not necessary, this function will prove very useful in implementing the other functions.
  ***********************************************************/
- struct flight_schedule * flight_schedule_find(city_t city){
-   return 0;
+  struct flight_schedule * flight_schedule_find(city_t city){
+  struct flight_schedule *trav = flight_schedules_active;
+  while (trav != NULL){
+    if (strcmp(trav->destination,city) == 0){ 
+      return trav;
+    }
+    trav = trav->next;
+  }
+  return 0;
  }
