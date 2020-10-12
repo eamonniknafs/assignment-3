@@ -516,6 +516,7 @@ void flight_schedule_remove_flight(city_t city){
     fs->flights[idx].capacity = 0;
     fs->flights[idx].time = TIME_NULL;
   }
+  else printf("%s\n","Sorry there's no flight scheduled on this time.");
 }
 
 /***********************************************************
@@ -538,7 +539,11 @@ void flight_schedule_schedule_seat(city_t city){
     }
     else if (fs->flights[temp].time >= in && fs->flights[temp].time < fs->flights[idx].time) idx = temp;
   }
-  if (idx != -1 && fs->flights[idx].available>0) fs->flights[idx].available--; //subtracts from number of available seats
+  if (idx != -1){
+    if (fs->flights[idx].available>0) fs->flights[idx].available--; //subtracts from number of available seats
+    else printf("%s\n","Sorry there's no more seats available!");
+  }
+  else printf("%s\n","Sorry there's no more seats available!");
 }
 
 /***********************************************************
@@ -557,9 +562,13 @@ void flight_schedule_unschedule_seat(city_t city){
   int idx = 0;
   while (fs->flights[idx].time != in){ //find the correct flight in that node's flights[] array
     idx++;
-    if (idx >= MAX_FLIGHTS_PER_CITY) break;
+    if (idx >= MAX_FLIGHTS_PER_CITY){
+      printf("%s\n","Sorry there's no flight scheduled on this time.");
+      return;
+    }
   }
   if (fs->flights[idx].available<fs->flights[idx].capacity) fs->flights[idx].available++; //adds to the number of available seats  
+  else printf("%s\n","All the seats on this flights are empty!");
 }
 
 /***********************************************************
