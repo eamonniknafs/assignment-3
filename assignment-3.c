@@ -493,6 +493,7 @@ void flight_schedule_add_flight(city_t city){
       int idx = 0;
       while (trav->flights[idx].time != TIME_NULL){ //find an empty slot in that node's flights[] array
         idx++;
+        if (idx >= MAX_FLIGHTS_PER_CITY) break;
       }
       time_get(&trav->flights[idx].time); //assign the values
       flight_capacity_get(&trav->flights[idx].capacity);
