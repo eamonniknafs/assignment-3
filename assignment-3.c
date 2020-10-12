@@ -516,7 +516,7 @@ void flight_schedule_remove_flight(city_t city){
     if (*trav->destination == *city){ //find the right node (destination city)
       time_get(&in);
       int idx = 0;
-      while (trav->flights[idx].time != in){ //find an empty slot in that node's flights[] array
+      while (trav->flights[idx].time != in){ //find the correct flight in that node's flights[] array
         idx++;
         if (idx >= MAX_FLIGHTS_PER_CITY) break;
       }
@@ -530,7 +530,6 @@ void flight_schedule_remove_flight(city_t city){
   }
 }
 
-//TODO: flight_schedule_schedule_seat
 /***********************************************************
  * flight_schedule_schedule_seat():
    – Takes as input a city and schedules a seat on a flight for this city.
@@ -539,7 +538,24 @@ void flight_schedule_remove_flight(city_t city){
    – Does not return anything.
    – Command line syntax: ”s Toronto\n 340 '\n'”
  ***********************************************************/
-void flight_schedule_schedule_seat(city_t city){}
+void flight_schedule_schedule_seat(city_t city){
+  struct flight_schedule *trav = flight_schedules_active;
+  time_t in;
+  while (trav != NULL){
+    if (*trav->destination == *city){ //find the right node (destination city)
+      time_get(&in);
+      int idx = -1;
+      for (int temp = 0; temp < MAX_FLIGHTS_PER_CITY; temp++){ //find the correct flight in that node's flights[] array
+        if (idx == -1){
+          if (trav->flights[temp].time >= in) idx = temp;
+        }
+        else if (trav->flights[temp].time >= in && trav->flights[temp].time < trav->flights[idx].time) idx = temp;
+      }
+      if (idx != -1 && trav->flights[idx].available>0) trav->flights[idx].available--; //subtracts from number of available seats
+    }
+    trav = trav->next;
+  }
+}
 
 //TODO: flight_schedule_unschedule_seat
 /***********************************************************
