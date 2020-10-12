@@ -12,7 +12,7 @@
 // Limit constants
 #define MAX_CITY_NAME_LEN 20
 #define MAX_FLIGHTS_PER_CITY 5
-#define MAX_DEFAULT_SCHEDULES 2
+#define MAX_DEFAULT_SCHEDULES 50
 
 // Time definitions
 #define TIME_MIN 0
@@ -410,7 +410,10 @@ void flight_schedule_free(struct flight_schedule *fs){
    – Command line syntax: ”A Toronto\n”
  ***********************************************************/
 void flight_schedule_add(city_t city){
-  if (flight_schedules_free == NULL) printf("%s\n","Sorry no more free schedules.");
+  if (flight_schedules_free == NULL) {
+    printf("%s\n","Sorry no more free schedules.");
+    return;
+  }
   if (flight_schedule_find(city) != NULL){
     printf("%s","There is a schedule of ");
     printf("%s", city);
