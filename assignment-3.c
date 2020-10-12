@@ -421,22 +421,18 @@ void flight_schedule_add(city_t city){
    – Command line syntax: ”R Toronto\n”
  ***********************************************************/
 void flight_schedule_remove(city_t city){
-  struct flight_schedule *trav = flight_schedules_active;
-  while (trav != NULL){
-    if (*trav->destination == *city) { //find the right node, them removes references
-      if (trav->next != NULL && trav->prev != NULL){ //accounts for next & prev pointers on node being removed
-        trav->prev->next = trav->next;
-        trav->next->prev = trav->prev;
-      }
-      else if (trav->prev != NULL) trav->prev->next = NULL;
-      else if (trav->next != NULL) flight_schedules_free = trav->next;
-      else flight_schedules_free = NULL;
-      flight_schedule_reset(trav); //Resets node being removed
-      trav->next = flight_schedules_free; //Places node back on free list
-      flight_schedules_free = trav;
-    }
-    trav = trav->next;
+  struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
+  if (fs == NULL) return;
+  if (fs->next != NULL && fs->prev != NULL){ //accounts for next & prev pointers on node being removed
+    fs->prev->next = fs->next;
+    fs->next->prev = fs->prev;
   }
+  else if (fs->prev != NULL) fs->prev->next = NULL; 
+  else if (fs->next != NULL) flight_schedules_free = fs->next;
+  else flight_schedules_free = NULL;
+  flight_schedule_reset(fs); //Resets node being removed
+  fs->next = flight_schedules_free; //Places node back on free list
+  flight_schedules_free = fs;
 }
 
 /***********************************************************
@@ -458,23 +454,19 @@ void flight_schedule_listAll(){
    – Command line syntax: ”l Toronto\n”
  ***********************************************************/
 void flight_schedule_list(city_t city){
-  struct flight_schedule *trav = flight_schedules_active;
-  while (trav != NULL){
-    if (*trav->destination == *city){ //find the right node (destination city)
-      printf("%s", "The flights for ");
-      printf("%s", trav->destination);
-      printf("%s", " are:");
-      for (int i = 0; trav->flights[i].time != TIME_NULL; i++){ //find the flight(s)
-        printf("%s", " (");
-        printf("%i", trav->flights[i].time);
-        printf("%s", ", ");
-        printf("%i", trav->flights[i].available);
-        printf("%s", ", ");
-        printf("%i", trav->flights[i].capacity);
-        printf("%s", ")");
-      }
-    }
-    trav = trav->next;
+  struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
+  if (fs == NULL) return;
+  printf("%s", "The flights for ");
+  printf("%s", fs->destination);
+  printf("%s", " are:");
+  for (int i = 0; fs->flights[i].time != TIME_NULL; i++){ //find the flight(s)
+    printf("%s", " (");
+    printf("%i", fs->flights[i].time);
+    printf("%s", ", ");
+    printf("%i", fs->flights[i].available);
+    printf("%s", ", ");
+    printf("%i", fs->flights[i].capacity);
+    printf("%s", ")");
   }
   printf("\n");
 }
@@ -487,20 +479,16 @@ void flight_schedule_list(city_t city){
    – Command line syntax: ”a Toronto\n 360 100\n”
  ***********************************************************/
 void flight_schedule_add_flight(city_t city){
-  struct flight_schedule *trav = flight_schedules_active;
-  while (trav != NULL){
-    if (*trav->destination == *city) { //find the right node (destination city)
-      int idx = 0;
-      while (trav->flights[idx].time != TIME_NULL){ //find an empty slot in that node's flights[] array
-        idx++;
-        if (idx >= MAX_FLIGHTS_PER_CITY) break;
-      }
-      time_get(&trav->flights[idx].time); //assign the values
-      flight_capacity_get(&trav->flights[idx].capacity);
-      trav->flights[idx].available = trav->flights[idx].capacity;
-    }
-    trav = trav->next;
+  struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
+  if (fs == NULL) return;
+  int idx = 0;
+  while (fs->flights[idx].time != TIME_NULL){ //find an empty slot in that node's flights[] array
+    idx++;
+    if (idx >= MAX_FLIGHTS_PER_CITY) break;
   }
+  time_get(&fs->flights[idx].time); //assign the values
+  flight_capacity_get(&fs->flights[idx].capacity);
+  fs->flights[idx].available = fs->flights[idx].capacity;
 }
 
 /***********************************************************
@@ -511,23 +499,19 @@ void flight_schedule_add_flight(city_t city){
    – Command line syntax: ”r Toronto\n 360 '\n'”
  ***********************************************************/
 void flight_schedule_remove_flight(city_t city){
-  struct flight_schedule *trav = flight_schedules_active;
+  struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
+  if (fs == NULL) return;
   time_t in;
-  while (trav != NULL){
-    if (*trav->destination == *city){ //find the right node (destination city)
-      time_get(&in);
-      int idx = 0;
-      while (trav->flights[idx].time != in){ //find the correct flight in that node's flights[] array
-        idx++;
-        if (idx >= MAX_FLIGHTS_PER_CITY) break;
-      }
-      if (trav->flights[idx].time == in) {
-        trav->flights[idx].available = 0;
-        trav->flights[idx].capacity = 0;
-        trav->flights[idx].time = TIME_NULL;
-      }
-    }
-    trav = trav->next;
+  time_get(&in);
+  int idx = 0;
+  while (fs->flights[idx].time != in){ //find the correct flight in that node's flights[] array
+    idx++;
+    if (idx >= MAX_FLIGHTS_PER_CITY) break;
+  }
+  if (fs->flights[idx].time == in) {
+    fs->flights[idx].available = 0;
+    fs->flights[idx].capacity = 0;
+    fs->flights[idx].time = TIME_NULL;
   }
 }
 
@@ -540,22 +524,18 @@ void flight_schedule_remove_flight(city_t city){
    – Command line syntax: ”s Toronto\n 340 '\n'”
  ***********************************************************/
 void flight_schedule_schedule_seat(city_t city){
-  struct flight_schedule *trav = flight_schedules_active;
+  struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
+  if (fs == NULL) return;
   time_t in;
-  while (trav != NULL){
-    if (*trav->destination == *city){ //find the right node (destination city)
-      time_get(&in);
-      int idx = -1;
-      for (int temp = 0; temp < MAX_FLIGHTS_PER_CITY; temp++){ //find the correct flight in that node's flights[] array
-        if (idx == -1){
-          if (trav->flights[temp].time >= in) idx = temp;
-        }
-        else if (trav->flights[temp].time >= in && trav->flights[temp].time < trav->flights[idx].time) idx = temp;
-      }
-      if (idx != -1 && trav->flights[idx].available>0) trav->flights[idx].available--; //subtracts from number of available seats
+  time_get(&in);
+  int idx = -1;
+  for (int temp = 0; temp < MAX_FLIGHTS_PER_CITY; temp++){ //find the correct flight in that node's flights[] array
+    if (idx == -1){
+      if (fs->flights[temp].time >= in) idx = temp;
     }
-    trav = trav->next;
+    else if (fs->flights[temp].time >= in && fs->flights[temp].time < fs->flights[idx].time) idx = temp;
   }
+  if (idx != -1 && fs->flights[idx].available>0) fs->flights[idx].available--; //subtracts from number of available seats
 }
 
 /***********************************************************
@@ -567,20 +547,16 @@ void flight_schedule_schedule_seat(city_t city){
    – Command line syntax: ”u Toronto\n 360 '\n'”
  ***********************************************************/
 void flight_schedule_unschedule_seat(city_t city){
-  struct flight_schedule *trav = flight_schedules_active;
+  struct flight_schedule *fs = flight_schedule_find(city);  //find the right node (destination city)
+  if (fs == NULL) return;
   time_t in;
-  while (trav != NULL){
-    if (strcmp(trav->destination,city) == 0){ //find the right node (destination city)
-      time_get(&in);
-      int idx = 0;
-      while (trav->flights[idx].time != in){ //find the correct flight in that node's flights[] array
-        idx++;
-        if (idx >= MAX_FLIGHTS_PER_CITY) break;
-      }
-      if (trav->flights[idx].available<trav->flights[idx].capacity) trav->flights[idx].available++; //adds to the number of available seats
-    }
-    trav = trav->next;
+  time_get(&in);
+  int idx = 0;
+  while (fs->flights[idx].time != in){ //find the correct flight in that node's flights[] array
+    idx++;
+    if (idx >= MAX_FLIGHTS_PER_CITY) break;
   }
+  if (fs->flights[idx].available<fs->flights[idx].capacity) fs->flights[idx].available++; //adds to the number of available seats  
 }
 
 /***********************************************************
@@ -592,10 +568,10 @@ void flight_schedule_unschedule_seat(city_t city){
   struct flight_schedule * flight_schedule_find(city_t city){
   struct flight_schedule *trav = flight_schedules_active;
   while (trav != NULL){
-    if (strcmp(trav->destination,city) == 0){ 
-      return trav;
+    if (strcmp(trav->destination,city) == 0){  //if city from param matches city on node
+      return trav; //return that node
     }
     trav = trav->next;
   }
-  return 0;
+  return NULL; //else return NULL
  }
