@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     char *end;
     n = strtol(argv[1], &end, 10); // CPAMA p 787
     if (n==0) {
-      printf("ERROR: Bad number of default max scedules specified.\n");
+      printf("ERROR: Bad number of default max schedules specified.\n");
       exit(EXIT_FAILURE);
     }
   }
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
   // DEFENSIVE PROGRAMMING:  Write code that avoids bad things from happening.
   //  When possible, if we know that some particular thing should have happened
   //  we think of that as an assertion and write code to test them.
-  // Use the assert function (CPAMA p749) to be sure the initilization has set
+  // Use the assert function (CPAMA p749) to be sure the initialization has set
   // the free list to a non-null value and the the active list is a null value.
   assert(flight_schedules_free != NULL && flight_schedules_active == NULL);
 
@@ -384,8 +384,8 @@ struct flight_schedule * flight_schedule_allocate(){
   flight_schedules_free = flight_schedules_free->next;
   flight_schedules_active->next = fsa_next;
   flight_schedules_active->prev = NULL;
-  if (fsa_next != 0) fsa_next->prev = flight_schedules_active;
-  flight_schedules_free->prev = NULL;
+  if (fsa_next != NULL) fsa_next->prev = flight_schedules_active;
+  if (flight_schedules_free != NULL) flight_schedules_free->prev = NULL;
   return flight_schedules_active;
 }
 
@@ -410,8 +410,11 @@ void flight_schedule_free(struct flight_schedule *fs){
    – Command line syntax: ”A Toronto\n”
  ***********************************************************/
 void flight_schedule_add(city_t city){
-  struct flight_schedule *fs = flight_schedule_allocate();
-  strcpy(fs->destination, city);
+  if (flight_schedules_free == NULL) printf("%s\n","Sorry no more free schedules.");
+  else{
+    struct flight_schedule *fs = flight_schedule_allocate();
+    strcpy(fs->destination, city);
+  }
 }
 
 /***********************************************************
