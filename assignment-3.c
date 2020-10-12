@@ -570,7 +570,7 @@ void flight_schedule_unschedule_seat(city_t city){
   struct flight_schedule *trav = flight_schedules_active;
   time_t in;
   while (trav != NULL){
-    if (*trav->destination == *city){ //find the right node (destination city)
+    if (strcmp(trav->destination,city) == 0){ //find the right node (destination city)
       time_get(&in);
       int idx = 0;
       while (trav->flights[idx].time != in){ //find the correct flight in that node's flights[] array
